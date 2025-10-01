@@ -1,37 +1,64 @@
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pay ₹25</title>
+<title>Pay ₹25 via UPI</title>
 <style>
-body { text-align:center; font-family: Arial; margin-top:50px; }
-button.pay { background:#4caf50; padding:15px 30px; font-size:20px; border:none; color:white; cursor:pointer; }
-button.pay:hover { background:#388e3c; }
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  padding: 50px;
+  background: #f4f4f4;
+}
+h2 {
+  margin-bottom: 20px;
+}
+#upiQR {
+  margin: 30px auto;
+}
+button#paidButton {
+  background: #4caf50;
+  color: white;
+  font-size: 20px;
+  padding: 15px 30px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  display: none; /* hidden initially */
+  margin-top: 20px;
+}
+button#paidButton:hover {
+  background: #388e3c;
+}
 </style>
 </head>
 <body>
 
 <h2>Pay ₹25 to Access Full Content</h2>
-<p>Click the button below to pay via UPI</p>
-<button class="pay" id="payButton">Pay ₹25 via UPI</button>
-<p id="status"></p>
+<p>Take Screenshot and Scan this QR code with any UPI app (GPay, PhonePe, Paytm, etc.)</p>
+<div id="upiQR"></div>
 
+<button id="paidButton">I Paid</button>
+
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 <script>
-const upiID = "arockiaraaj2003-1@oksbi"; // <-- replace with your UPI ID
-const amount = 25; // ₹25
+const upiID = "arockiaraaj2003-1@oksbi"; // <-- Replace with your UPI ID
+const amount = 25;
+const upiURL = `upi://pay?pa=${upiID}&pn=B.Ed Warriors&am=${amount}&cu=INR`;
 
-document.getElementById('payButton').addEventListener('click', () => {
-  // Create UPI payment link
-  const upiLink = `upi://pay?pa=${upiID}&pn=B.Ed%20Warriors&am=${amount}&cu=INR`;
-  // Open link in new tab (mobile will open UPI app)
-  window.location.href = upiLink;
+// Generate QR code
+QRCode.toCanvas(document.getElementById('upiQR'), upiURL, function (error) {
+  if (error) console.error(error);
+  else document.getElementById('paidButton').style.display = 'inline-block'; // show button after QR generated
+});
 
-  // Show Please wait message and redirect to form after short delay
-  document.getElementById('status').textContent = 'Please wait...';
-  setTimeout(() => {
-    window.location.href = 'form.html';
-  }, 3000); // 3 seconds delay
+// Redirect to form.html when user confirms payment
+document.getElementById('paidButton').addEventListener('click', () => {
+  window.location.href = 'form.html';
 });
 </script>
 
