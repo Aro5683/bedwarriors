@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pay ₹25</title>
+<style>
+body { text-align:center; font-family: Arial; margin-top:50px; }
+button.pay { background:#4caf50; padding:15px 30px; font-size:20px; border:none; color:white; cursor:pointer; }
+</style>
+</head>
+<body>
+
+<h2>Pay ₹25 to Access Full Content</h2>
+<button class="pay" id="payButton">Pay via UPI</button>
+<p id="status"></p>
+
+<script>
+document.getElementById('payButton').addEventListener('click', () => {
+  // simulate UPI payment
+  document.getElementById('status').textContent = 'Please wait...';
+  setTimeout(() => {
+    window.location.href = 'form.html';
+  }, 2000); // simulate 2 sec delay
+});
+</script>
+
+</body>
+</html>
