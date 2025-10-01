@@ -3,21 +3,141 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>B.Ed Warriors</title>
+<title>B.Ed Warriors - Digital Access</title>
 <style>
-body { font-family: Arial; text-align:center; margin:0; padding:0; }
+/* General Styles */
+body { margin:0; font-family: Arial, sans-serif; text-align:center; background:#f4f4f4; }
 header { background:#007bff; color:white; padding:20px; font-size:24px; }
-img.clickable { width:300px; cursor:pointer; margin-top:50px; }
+.container { max-width:400px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); }
+button { padding:10px 20px; font-size:18px; border:none; border-radius:5px; cursor:pointer; }
+button:hover { opacity:0.9; }
+img.clickable { width:300px; cursor:pointer; margin:20px auto; display:block; }
+
+/* Gallery Styles */
+#gallery img { width:100%; display:block; margin-bottom:10px; }
+#overlay {
+  position:fixed; bottom:0; left:0; width:100%; height:100px;
+  background:rgba(0,0,0,0.7); color:white;
+  display:flex; justify-content:center; align-items:center; opacity:0;
+  transition:opacity 1s;
+}
+#buyButton { background:#ff9800; color:white; font-size:18px; padding:10px 20px; cursor:pointer; border:none; border-radius:5px; }
+
+/* Payment Styles */
+#upiQR { margin:30px auto; }
+#paidButton { background:#4caf50; color:white; font-size:20px; padding:15px 30px; border:none; border-radius:5px; cursor:pointer; display:none; margin-top:20px; }
+
+/* Form Styles */
+input { width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+#submitButton { background:#007bff; color:white; }
+#submitButton:hover { background:#0056b3; }
+
+/* Popup */
+#popup {
+  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7);
+  display:flex; justify-content:center; align-items:center; color:white; font-size:24px; display:none;
+}
 </style>
 </head>
 <body>
 
 <header>B.Ed Warriors</header>
-<img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143462.jpg" class="clickable" id="landingImage">
+
+<!-- Landing Page -->
+<div id="landingPage">
+  <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg" class="clickable" id="landingImage">
+</div>
+
+<!-- Gallery Page -->
+<div id="galleryPage" style="display:none;">
+  <div id="gallery">
+    <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg">
+    <img src="https://via.placeholder.com/600x400.png?text=2">
+    <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg" id="lastImage">
+  </div>
+  <div id="overlay">
+    <button id="buyButton">Superb Buy to View Full</button>
+  </div>
+</div>
+
+<!-- Payment Page -->
+<div id="paymentPage" style="display:none;" class="container">
+  <h2>Pay ₹25 via UPI</h2>
+  <p>Scan this QR code with any UPI app (GPay, PhonePe, Paytm)</p>
+  <canvas id="upiQR"></canvas>
+  <button id="paidButton">I Paid</button>
+</div>
+
+<!-- Form Page -->
+<div id="formPage" style="display:none;" class="container">
+  <h2>Submit Your Details</h2>
+  <form id="paymentForm">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <button type="submit" id="submitButton">Submit</button>
+  </form>
+</div>
+
+<!-- Popup -->
+<div id="popup">Please wait 1 hour and come to access your file.</div>
+
+<!-- QRCode Library -->
+<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
 
 <script>
-document.getElementById('landingImage').addEventListener('click', function() {
-  window.location.href = 'gallery.html';
+// Page Navigation
+const landingPage = document.getElementById('landingPage');
+const galleryPage = document.getElementById('galleryPage');
+const paymentPage = document.getElementById('paymentPage');
+const formPage = document.getElementById('formPage');
+const popup = document.getElementById('popup');
+
+document.getElementById('landingImage').addEventListener('click', () => {
+  landingPage.style.display = 'none';
+  galleryPage.style.display = 'block';
+});
+
+// Gallery Scroll Overlay
+const lastImage = document.getElementById('lastImage');
+const overlay = document.getElementById('overlay');
+
+window.addEventListener('scroll', () => {
+  const rect = lastImage.getBoundingClientRect();
+  if(rect.top < window.innerHeight && rect.bottom > 0) {
+    overlay.style.opacity = 1;
+  } else {
+    overlay.style.opacity = 0;
+  }
+});
+
+document.getElementById('buyButton').addEventListener('click', () => {
+  galleryPage.style.display = 'none';
+  paymentPage.style.display = 'block';
+
+  // Generate QR code
+  const upiID = "arockiaraaj2003-1@oksbi"; // Replace with your UPI ID
+  const amount = 25;
+  const upiURL = `upi://pay?pa=${upiID}&pn=B.Ed Warriors&am=${amount}&cu=INR`;
+  QRCode.toCanvas(document.getElementById('upiQR'), upiURL, function (error) {
+    if (error) console.error(error);
+    else document.getElementById('paidButton').style.display = 'inline-block';
+  });
+});
+
+// "I Paid" Button
+document.getElementById('paidButton').addEventListener('click', () => {
+  paymentPage.style.display = 'none';
+  formPage.style.display = 'block';
+});
+
+// Form Submission
+const form = document.getElementById('paymentForm');
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  // EmailJS or your backend code can go here if needed
+  formPage.style.display = 'none';
+  popup.style.display = 'flex';
+  form.reset();
 });
 </script>
 
