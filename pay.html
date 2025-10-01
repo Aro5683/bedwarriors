@@ -7,21 +7,31 @@
 <style>
 body { text-align:center; font-family: Arial; margin-top:50px; }
 button.pay { background:#4caf50; padding:15px 30px; font-size:20px; border:none; color:white; cursor:pointer; }
+button.pay:hover { background:#388e3c; }
 </style>
 </head>
 <body>
 
 <h2>Pay ₹25 to Access Full Content</h2>
-<button class="pay" id="payButton">Pay via UPI</button>
+<p>Click the button below to pay via UPI</p>
+<button class="pay" id="payButton">Pay ₹25 via UPI</button>
 <p id="status"></p>
 
 <script>
+const upiID = "arockiaraaj2003-1@oksbi"; // <-- replace with your UPI ID
+const amount = 25; // ₹25
+
 document.getElementById('payButton').addEventListener('click', () => {
-  // simulate UPI payment
+  // Create UPI payment link
+  const upiLink = `upi://pay?pa=${upiID}&pn=B.Ed%20Warriors&am=${amount}&cu=INR`;
+  // Open link in new tab (mobile will open UPI app)
+  window.location.href = upiLink;
+
+  // Show Please wait message and redirect to form after short delay
   document.getElementById('status').textContent = 'Please wait...';
   setTimeout(() => {
     window.location.href = 'form.html';
-  }, 2000); // simulate 2 sec delay
+  }, 3000); // 3 seconds delay
 });
 </script>
 
