@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Submit Your Details</title>
+<style>
+body { font-family: Arial; background:#f4f4f4; display:flex; justify-content:center; align-items:center; height:100vh; }
+.container { background:#fff; padding:30px; border-radius:10px; width:100%; max-width:400px; box-shadow:0 0 15px rgba(0,0,0,0.1);}
+input, button { width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
+button { background:#007bff; color:#fff; border:none; cursor:pointer; }
+button:hover { background:#0056b3; }
+#popup {
+  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7);
+  display:flex; justify-content:center; align-items:center; color:white; font-size:24px; display:none;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Submit Your Details</h2>
+  <form id="paymentForm">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <button type="submit">Submit</button>
+  </form>
+</div>
+
+<div id="popup">Please wait 1 hour and come to access your file.</div>
+
+<script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+<script>
+emailjs.init('F77qJlImeLECVFtEM'); // Public Key
+
+const form = document.getElementById('paymentForm');
+const popup = document.getElementById('popup');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const templateParams = {
+    name: form.name.value,
+    email: form.email.value
+  };
+  emailjs.send('service_oa4f757', 'template_84uiu0b', templateParams)
+    .then(() => {
+      popup.style.display = 'flex';
+      form.reset();
+    })
+    .catch((err) => {
+      alert('Something went wrong!');
+      console.error(err);
+    });
+});
+</script>
+
+</body>
+</html>
