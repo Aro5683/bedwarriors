@@ -20,49 +20,49 @@
 </head>
 <body>
 
-  <!-- Registration -->
-  <div class="container" id="submitContainer">
-    <h2>Sign Up (New User Only)</h2>
-    <form id="paymentForm">
-      <input type="text" name="name" placeholder="Your Name" required>
-      <input type="email" name="email" placeholder="Your Email" required>
-      <input type="password" name="password" placeholder="Your Password" required>
-      <input type="hidden" name="deviceId" id="deviceId">
-      <button type="submit">Sign Up</button>
-    </form>
-    <button id="showLoginBtn" style="background:#10b981;">Login</button>
-    <div id="popup">Please wait for Admin Approval.</div>
-    <div class="device-box" id="deviceBox"></div>
-  </div>
+<!-- Registration -->
+<div class="container" id="submitContainer">
+  <h2>Sign Up (New User Only)</h2>
+  <form id="paymentForm">
+    <input type="text" name="name" placeholder="Your Name" required>
+    <input type="email" name="email" placeholder="Your Email" required>
+    <input type="password" name="password" placeholder="Your Password" required>
+    <input type="hidden" name="deviceId" id="deviceId">
+    <button type="submit">Sign Up</button>
+  </form>
+  <button id="showLoginBtn" style="background:#10b981;">Login</button>
+  <div id="popup">Please wait for Admin Approval.</div>
+  <div class="device-box" id="deviceBox"></div>
+</div>
 
-  <!-- Login -->
-  <div class="container" id="loginContainer" style="display:none;">
-    <h2>Login</h2>
-    <form id="loginForm">
-      <input type="email" id="loginEmail" placeholder="Email" required>
-      <input type="password" id="loginPassword" placeholder="Password" required>
-      <button type="submit">Login</button>
-    </form>
-    <div id="loginMsg"></div>
-    <div class="device-box" id="loginDeviceBox"></div>
-  </div>
+<!-- Login -->
+<div class="container" id="loginContainer" style="display:none;">
+  <h2>Login</h2>
+  <form id="loginForm">
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button type="submit">Login</button>
+  </form>
+  <div id="loginMsg"></div>
+  <div class="device-box" id="loginDeviceBox"></div>
+</div>
 
-  <!-- Language Selection -->
-  <div class="container" id="languageSelection" style="display:none;">
-    <h2>Select Medium</h2>
-    <button id="englishBtn">English Medium</button>
-    <button id="tamilBtn">Tamil Medium</button>
-  </div>
+<!-- Language Selection -->
+<div class="container" id="languageSelection" style="display:none;">
+  <h2>Select Medium</h2>
+  <button id="englishBtn">English Medium</button>
+  <button id="tamilBtn">Tamil Medium</button>
+</div>
 
-  <!-- Images Section -->
-  <div class="container" id="imageSection" style="display:none;">
-    <div id="imagesContainer"></div>
-  </div>
+<!-- Images Section -->
+<div class="container" id="imageSection" style="display:none;">
+  <div id="imagesContainer"></div>
+</div>
 
-  <!-- PDF Viewer -->
-  <div class="container" id="pdfContainer">
-    <iframe id="pdfViewer"></iframe>
-  </div>
+<!-- PDF Viewer -->
+<div class="container" id="pdfContainer">
+  <iframe id="pdfViewer"></iframe>
+</div>
 
 <script>
   // Generate UUID for device
@@ -91,20 +91,17 @@
   const pdfContainer = document.getElementById('pdfContainer');
   const pdfViewer = document.getElementById('pdfViewer');
 
-  // ======== HARD-CODED USERS ========
+  // ======== USERS ========
   const users = [
     {name:"Alice Smith", email:"alice@example.com", password:"alice123", deviceId:"43648fb2-330b-4d0a-b7f0-aa469228c4bf"},
     {name:"Bob Johnson", email:"bob@example.com", password:"bob123", deviceId:"123e4567-e89b-12d3-a456-426614174001"}
   ];
-  // ================================
 
-  // Show login form
   document.getElementById('showLoginBtn').addEventListener('click', ()=>{
     submitContainer.style.display='none';
     loginContainer.style.display='block';
   });
 
-  // Registration (for demo only, not persistent)
   const form = document.getElementById('paymentForm');
   form.addEventListener('submit', e=>{
     e.preventDefault();
@@ -130,7 +127,6 @@
     },500);
   });
 
-  // Login
   const loginForm = document.getElementById('loginForm');
   loginForm.addEventListener('submit', e=>{
     e.preventDefault();
@@ -159,21 +155,22 @@
     languageSelection.style.display='block';
   });
 
-  // PDF data
-  const englishFiles=[
-    {img:'english1.jpg', title:'Book 1', author:'Author A', pdf:'english1.pdf'},
-    {img:'english2.jpg', title:'Book 2', author:'Author B', pdf:'english2.pdf'},
-    {img:'english3.jpg', title:'Book 3', author:'Author C', pdf:'english3.pdf'},
-    {img:'english4.jpg', title:'Book 4', author:'Author D', pdf:'english4.pdf'}
-  ];
-  const tamilFiles=[
-    {img:'tamil1.jpg', title:'Book 1', author:'Author X', pdf:'tamil1.pdf'},
-    {img:'tamil2.jpg', title:'Book 2', author:'Author Y', pdf:'tamil2.pdf'},
-    {img:'tamil3.jpg', title:'Book 3', author:'Author Z', pdf:'tamil3.pdf'},
-    {img:'tamil4.jpg', title:'Book 4', author:'Author W', pdf:'tamil4.pdf'}
-  ];
+  // ===== JSON Data for Images / PDFs =====
+  const filesJSON = {
+    english: [
+      {img:'images/english1.jpg', title:'Book 1', author:'Author A', pdf:'https://aro5683.github.io/bedwarriors/pdfs/english1.pdf'},
+      {img:'images/english2.jpg', title:'Book 2', author:'Author B', pdf:'https://yourusername.github.io/repo-name/pdfs/english2.pdf'},
+      {img:'images/english3.jpg', title:'Book 3', author:'Author C', pdf:'https://yourusername.github.io/repo-name/pdfs/english3.pdf'},
+      {img:'images/english4.jpg', title:'Book 4', author:'Author D', pdf:'https://yourusername.github.io/repo-name/pdfs/english4.pdf'}
+    ],
+    tamil: [
+      {img:'images/tamil1.jpg', title:'Book 1', author:'Author X', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil1.pdf'},
+      {img:'images/tamil2.jpg', title:'Book 2', author:'Author Y', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil2.pdf'},
+      {img:'images/tamil3.jpg', title:'Book 3', author:'Author Z', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil3.pdf'},
+      {img:'images/tamil4.jpg', title:'Book 4', author:'Author W', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil4.pdf'}
+    ]
+  };
 
-  // Show file images
   function showFiles(files){
     imagesContainer.innerHTML='';
     pdfContainer.style.display='none';
@@ -181,10 +178,9 @@
     files.forEach(file=>{
       const div=document.createElement('div');
       div.className='image-item';
-      div.innerHTML=`<img src="${file.img}" alt="${file.title}">
+      div.innerHTML=`<img src="${file.img}" loading="lazy" alt="${file.title}">
                      <h3>${file.title}</h3><p>${file.author}</p>`;
       div.addEventListener('click', ()=>{
-        // Load PDF in Mozilla PDF.js viewer with download/print disabled
         const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(file.pdf)}#disableprint=true&disabledownload=true&toolbar=0`;
         pdfViewer.src = viewerUrl;
         pdfContainer.style.display='block';
@@ -195,8 +191,8 @@
     imageSection.style.display='block';
   }
 
-  document.getElementById('englishBtn').addEventListener('click', ()=>showFiles(englishFiles));
-  document.getElementById('tamilBtn').addEventListener('click', ()=>showFiles(tamilFiles));
+  document.getElementById('englishBtn').addEventListener('click', ()=>showFiles(filesJSON.english));
+  document.getElementById('tamilBtn').addEventListener('click', ()=>showFiles(filesJSON.tamil));
 
 </script>
 </body>
