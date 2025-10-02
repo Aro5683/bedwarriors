@@ -14,7 +14,8 @@
     #languageSelection button { width:45%; margin:10px; }
     .image-item { margin:20px 0; cursor:pointer; }
     .image-item img { max-width:250px; border-radius:6px; }
-    #pdfViewer { width:100%; height:600px; border:none; display:none; margin-top:20px; }
+    #pdfContainer { width:100%; height:600px; display:none; margin-top:20px; }
+    #pdfViewer { width:100%; height:100%; border:none; }
   </style>
 </head>
 <body>
@@ -59,7 +60,9 @@
   </div>
 
   <!-- PDF Viewer -->
-  <iframe id="pdfViewer"></iframe>
+  <div class="container" id="pdfContainer">
+    <iframe id="pdfViewer"></iframe>
+  </div>
 
 <script>
   // Generate UUID for device
@@ -85,10 +88,10 @@
   const languageSelection = document.getElementById('languageSelection');
   const imageSection = document.getElementById('imageSection');
   const imagesContainer = document.getElementById('imagesContainer');
+  const pdfContainer = document.getElementById('pdfContainer');
   const pdfViewer = document.getElementById('pdfViewer');
 
   // ======== HARD-CODED USERS ========
-  // Enter your users here
   const users = [
     {name:"Alice Smith", email:"alice@example.com", password:"alice123", deviceId:"43648fb2-330b-4d0a-b7f0-aa469228c4bf"},
     {name:"Bob Johnson", email:"bob@example.com", password:"bob123", deviceId:"123e4567-e89b-12d3-a456-426614174001"}
@@ -101,7 +104,7 @@
     loginContainer.style.display='block';
   });
 
-  // Registration (for new users, optional, will not persist after reload)
+  // Registration (for demo only, not persistent)
   const form = document.getElementById('paymentForm');
   form.addEventListener('submit', e=>{
     e.preventDefault();
@@ -170,16 +173,21 @@
     {img:'tamil4.jpg', title:'Book 4', author:'Author W', pdf:'tamil4.pdf'}
   ];
 
+  // Show file images
   function showFiles(files){
     imagesContainer.innerHTML='';
-    pdfViewer.style.display='none';
+    pdfContainer.style.display='none';
+
     files.forEach(file=>{
       const div=document.createElement('div');
       div.className='image-item';
-      div.innerHTML=`<img src="${file.img}" alt="${file.title}"><h3>${file.title}</h3><p>${file.author}</p>`;
+      div.innerHTML=`<img src="${file.img}" alt="${file.title}">
+                     <h3>${file.title}</h3><p>${file.author}</p>`;
       div.addEventListener('click', ()=>{
-        pdfViewer.src=file.pdf;
-        pdfViewer.style.display='block';
+        // Load PDF in Mozilla PDF.js viewer with download/print disabled
+        const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(file.pdf)}#disableprint=true&disabledownload=true&toolbar=0`;
+        pdfViewer.src = viewerUrl;
+        pdfContainer.style.display='block';
         window.scrollTo({top: pdfViewer.offsetTop, behavior:'smooth'});
       });
       imagesContainer.appendChild(div);
