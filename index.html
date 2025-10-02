@@ -6,26 +6,26 @@
 <style>
   body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f6f7fb; }
   header, footer { background:#2563eb; color:white; text-align:center; padding:15px 0; font-size:24px; font-weight:bold; }
-  .gallery { display:flex; flex-wrap:wrap; justify-content:center; margin:20px; }
+  .gallery, .imagePage { padding:20px; max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:center; }
   .card { width:200px; margin:10px; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); cursor:pointer; overflow:hidden; text-align:center; }
   .card img { width:100%; height:150px; object-fit:cover; }
   .card h4, .card p { margin:5px; }
-  .imagePage { display:none; padding:20px; max-width:800px; margin:0 auto; }
   .imagePage img { width:100%; margin:10px 0; user-select:none; pointer-events:none; }
   #payPopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; }
   #payPopup .popup-content { background:white; padding:20px; border-radius:10px; text-align:center; width:300px; }
   #payPopup img { width:80%; margin:10px 0; }
   button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; background:#10b981; color:white; font-weight:bold; margin-top:10px; }
-  .container { width: 380px; margin: 40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+  .container { width:380px; margin:40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
   input { width:100%; padding:10px; margin:8px 0; border:1px solid #ddd; border-radius:6px; }
+  #protectedContent { display:none; }
 </style>
 </head>
 <body>
 
 <header>B.Ed Warriors</header>
 
-<!-- Main Gallery Page -->
-<div id="mainGallery" class="gallery">
+<!-- Gallery -->
+<div id="gallery" class="gallery">
   <div class="card" onclick="openImagePage(1)"><img src="https://picsum.photos/200/150?random=1"><h4>Title 1</h4><p>Author 1</p></div>
   <div class="card" onclick="openImagePage(2)"><img src="https://picsum.photos/200/150?random=2"><h4>Title 2</h4><p>Author 2</p></div>
   <div class="card" onclick="openImagePage(3)"><img src="https://picsum.photos/200/150?random=3"><h4>Title 3</h4><p>Author 3</p></div>
@@ -33,7 +33,7 @@
 </div>
 
 <!-- Image Page -->
-<div id="imagePage" class="imagePage">
+<div id="imagePage" class="imagePage" style="display:none; flex-direction:column;">
   <button onclick="backToGallery()">← Back</button>
   <div id="imagesContainer"></div>
 </div>
@@ -43,14 +43,14 @@
   <div class="popup-content">
     <h3>Read Full Content</h3>
     <p>Scan QR to pay ₹30</p>
-    <img src="https://images.unsplash.com/photo-1580820267682-426da823b514?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXQlMjBiYWNrZ3JvdW5kfGVufDB8fDB8fHww" alt="UPI QR">
+    <img src="https://images.unsplash.com/photo-1580820267682-426da823b514?fm=jpg&q=60&w=3000" alt="UPI QR">
     <button onclick="confirmPayment()">Submit</button>
   </div>
 </div>
 
-<!-- Registration/Login Container (hidden initially) -->
-<div class="container" id="submitContainer" style="display:none;">
-  <h2>Sign Up (New User Only)</h2>
+<!-- Registration -->
+<div class="container" id="registerForm" style="display:none;">
+  <h2>Sign Up</h2>
   <form id="paymentForm">
     <input type="text" name="name" placeholder="Your Name" required>
     <input type="email" name="email" placeholder="Your Email" required>
@@ -58,22 +58,21 @@
     <input type="hidden" name="deviceId" id="deviceId">
     <button type="submit">Sign Up</button>
   </form>
-  <button id="showLoginBtn" style="background:#10b981;">Login</button>
-  <div id="popupMsg">Please wait for Admin Approval to access content.</div>
+  <button id="showLoginBtn">Login</button>
 </div>
 
-<div class="container" id="loginContainer" style="display:none;">
+<!-- Login -->
+<div class="container" id="loginForm" style="display:none;">
   <h2>Login</h2>
-  <form id="loginForm">
+  <form id="formLogin">
     <input type="email" id="loginEmail" placeholder="Email" required>
     <input type="password" id="loginPassword" placeholder="Password" required>
     <button type="submit">Login</button>
   </form>
-  <div id="loginMsg"></div>
 </div>
 
-<!-- Protected Content (PDF or images) -->
-<div class="container" id="protectedContent" style="display:none;">
+<!-- Protected PDF -->
+<div class="container" id="protectedContent">
   <h2>Protected Content</h2>
   <iframe src="protected-file.pdf" style="width:100%; height:450px;" sandbox="allow-scripts allow-same-origin"></iframe>
 </div>
@@ -81,79 +80,75 @@
 <footer>B.Ed Warriors</footer>
 
 <script>
-  let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
-  localStorage.setItem("deviceId", deviceId);
-  document.getElementById("deviceId").value = deviceId;
+let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
+localStorage.setItem("deviceId", deviceId);
+document.getElementById("deviceId").value = deviceId;
 
-  const users = [
-    {name:"aro", email:"lalerev282@hostbyt.com", password:"890", deviceId:"1fdcfb35-7896-4dbe-bbff-21fa187cd25a"}
-  ];
+const users = [
+  {name:"aro", email:"lalerev282@hostbyt.com", password:"890", deviceId:"1fdcfb35-7896-4dbe-bbff-21fa187cd25a"}
+];
 
-  // Open image page
-
+// Gallery → Image Page
 function openImagePage(id){
-    document.getElementById('mainGallery').style.display='none';
-    document.getElementById('imagePage').style.display='block';
-    const container = document.getElementById('imagesContainer');
-    container.innerHTML='';
-
-    // Add 10 images
-    for(let i=1;i<=10;i++){
-        const img = document.createElement('img');
-        img.src = `https://picsum.photos/600/400?random=${id*10+i}`;
-        img.alt='Image '+i;
-        img.style.userSelect='none';
-        img.style.pointerEvents='none';
-        container.appendChild(img);
+  document.getElementById('gallery').style.display='none';
+  document.getElementById('imagePage').style.display='flex';
+  const container = document.getElementById('imagesContainer');
+  container.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const img = document.createElement('img');
+    img.src = `https://picsum.photos/600/400?random=${id*10+i}`;
+    img.alt='Image '+i;
+    img.style.userSelect='none';
+    img.style.pointerEvents='none';
+    container.appendChild(img);
+  }
+  // Scroll to bottom triggers pay popup
+  window.onscroll = function() {
+    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
+      document.getElementById('payPopup').style.display='flex';
     }
-
-    // Remove any previous scroll listener
-    window.onscroll = null;
-
-    // Attach scroll listener to window
-    window.onscroll = function() {
-        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
-            document.getElementById('payPopup').style.display='flex';
-        }
-    };
+  };
 }
 
+function backToGallery(){
+  document.getElementById('imagePage').style.display='none';
+  document.getElementById('gallery').style.display='flex';
+  window.onscroll=null;
+}
 
-  function backToGallery(){
-    document.getElementById('imagePage').style.display='none';
-    document.getElementById('mainGallery').style.display='flex';
-  }
+// Pay confirmation → show registration
+function confirmPayment(){
+  document.getElementById('payPopup').style.display='none';
+  document.getElementById('imagePage').style.display='none';
+  document.getElementById('registerForm').style.display='block';
+}
 
-  function confirmPayment(){
-    document.getElementById('payPopup').style.display='none';
-    document.getElementById('submitContainer').style.display='block';
-  }
+// Registration submit
+document.getElementById('paymentForm').addEventListener('submit', function(e){
+  e.preventDefault();
+  alert("Registered! Admin approval pending.");
+  this.reset();
+  document.getElementById('registerForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+});
 
-  // EmailJS & login registration logic (same as your original code)
-  const form = document.getElementById('paymentForm');
-  form.addEventListener('submit', function(e){
-    e.preventDefault();
-    alert("Registered. Admin will approve.");
-    form.reset();
-    document.getElementById('submitContainer').style.display='none';
-    document.getElementById('loginContainer').style.display='block';
-  });
+// Login submit
+document.getElementById('formLogin').addEventListener('submit', function(e){
+  e.preventDefault();
+  const email = document.getElementById('loginEmail').value.trim();
+  const pass = document.getElementById('loginPassword').value;
+  const user = users.find(u=>u.email===email && u.password===pass);
+  if(!user){ alert("Invalid login"); return; }
+  alert("Login successful! Showing protected content");
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('protectedContent').style.display='block';
+});
 
-  document.getElementById('showLoginBtn').addEventListener('click',()=>{
-    document.getElementById('submitContainer').style.display='none';
-    document.getElementById('loginContainer').style.display='block';
-  });
-
-  document.getElementById('loginForm').addEventListener('submit',function(e){
-    e.preventDefault();
-    const email = document.getElementById('loginEmail').value.trim();
-    const pass = document.getElementById('loginPassword').value;
-    const user = users.find(u=>u.email===email && u.password===pass);
-    if(!user){ alert("Invalid login"); return;}
-    alert("Login success! Showing content");
-    document.getElementById('loginContainer').style.display='none';
-    document.getElementById('protectedContent').style.display='block';
-  });
+// Show login button
+document.getElementById('showLoginBtn').addEventListener('click', ()=>{
+  document.getElementById('registerForm').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+});
 </script>
 
 </body>
