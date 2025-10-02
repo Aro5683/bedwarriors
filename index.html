@@ -1,155 +1,195 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<title>B.Ed Warriors</title>
-<style>
-  body { font-family: Arial, sans-serif; margin:0; padding:0; background:#f6f7fb; }
-  header, footer { background:#2563eb; color:white; text-align:center; padding:15px 0; font-size:24px; font-weight:bold; }
-  .gallery, .imagePage { padding:20px; max-width:900px; margin:0 auto; display:flex; flex-wrap:wrap; justify-content:center; }
-  .card { width:200px; margin:10px; background:white; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.1); cursor:pointer; overflow:hidden; text-align:center; }
-  .card img { width:100%; height:150px; object-fit:cover; }
-  .card h4, .card p { margin:5px; }
-  .imagePage img { width:100%; margin:10px 0; user-select:none; pointer-events:none; }
-  #payPopup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; }
-  #payPopup .popup-content { background:white; padding:20px; border-radius:10px; text-align:center; width:300px; }
-  #payPopup img { width:80%; margin:10px 0; }
-  button { padding:10px 20px; border:none; border-radius:6px; cursor:pointer; background:#10b981; color:white; font-weight:bold; margin-top:10px; }
-  .container { width:380px; margin:40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
-  input { width:100%; padding:10px; margin:8px 0; border:1px solid #ddd; border-radius:6px; }
-  #protectedContent { display:none; }
-</style>
+  <meta charset="UTF-8">
+  <title>PDF Viewer App</title>
+  <style>
+    body { font-family: Arial; background:#f6f7fb; }
+    .container { width: 600px; margin: 40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); text-align:center; }
+    input, button { width:100%; padding:10px; margin:8px 0; border-radius:6px; }
+    input { border:1px solid #ddd; }
+    button { border:none; background:#2563eb; color:white; font-weight:600; cursor:pointer; }
+    #popup, #loginMsg { display:none; justify-content:center; align-items:center; margin-top:20px; padding:12px; background:#dcfce7; border:1px solid #16a34a; border-radius:6px; color:#166534; text-align:center;}
+    .device-box { margin-top:12px; font-size:14px; color:#555; }
+    #languageSelection button { width:45%; margin:10px; }
+    .image-item { margin:20px 0; cursor:pointer; }
+    .image-item img { max-width:250px; border-radius:6px; }
+    #pdfViewer { width:100%; height:600px; border:none; display:none; margin-top:20px; }
+  </style>
 </head>
 <body>
 
-<header>B.Ed Warriors</header>
-
-<!-- Gallery -->
-<div id="gallery" class="gallery">
-  <div class="card" onclick="openImagePage(1)"><img src="https://picsum.photos/200/150?random=1"><h4>Title 1</h4><p>Author 1</p></div>
-  <div class="card" onclick="openImagePage(2)"><img src="https://picsum.photos/200/150?random=2"><h4>Title 2</h4><p>Author 2</p></div>
-  <div class="card" onclick="openImagePage(3)"><img src="https://picsum.photos/200/150?random=3"><h4>Title 3</h4><p>Author 3</p></div>
-  <div class="card" onclick="openImagePage(4)"><img src="https://picsum.photos/200/150?random=4"><h4>Title 4</h4><p>Author 4</p></div>
-</div>
-
-<!-- Image Page -->
-<div id="imagePage" class="imagePage" style="display:none; flex-direction:column;">
-  <button onclick="backToGallery()">← Back</button>
-  <div id="imagesContainer"></div>
-</div>
-
-<!-- Pay Popup -->
-<div id="payPopup">
-  <div class="popup-content">
-    <h3>Read Full Content</h3>
-    <p>Scan QR to pay ₹30</p>
-    <img src="https://images.unsplash.com/photo-1580820267682-426da823b514?fm=jpg&q=60&w=3000" alt="UPI QR">
-    <button onclick="confirmPayment()">Submit</button>
+  <!-- Registration -->
+  <div class="container" id="submitContainer">
+    <h2>Sign Up (New User Only)</h2>
+    <form id="paymentForm">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="password" name="password" placeholder="Your Password" required>
+      <input type="hidden" name="deviceId" id="deviceId">
+      <button type="submit">Sign Up</button>
+    </form>
+    <button id="showLoginBtn" style="background:#10b981;">Login</button>
+    <div id="popup">Please wait for Admin Approval.</div>
+    <div class="device-box" id="deviceBox"></div>
   </div>
-</div>
 
-<!-- Registration -->
-<div class="container" id="registerForm" style="display:none;">
-  <h2>Sign Up</h2>
-  <form id="paymentForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <input type="password" name="password" placeholder="Your Password" required>
-    <input type="hidden" name="deviceId" id="deviceId">
-    <button type="submit">Sign Up</button>
-  </form>
-  <button id="showLoginBtn">Login</button>
-</div>
+  <!-- Login -->
+  <div class="container" id="loginContainer" style="display:none;">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginMsg"></div>
+    <div class="device-box" id="loginDeviceBox"></div>
+  </div>
 
-<!-- Login -->
-<div class="container" id="loginForm" style="display:none;">
-  <h2>Login</h2>
-  <form id="formLogin">
-    <input type="email" id="loginEmail" placeholder="Email" required>
-    <input type="password" id="loginPassword" placeholder="Password" required>
-    <button type="submit">Login</button>
-  </form>
-</div>
+  <!-- Language Selection -->
+  <div class="container" id="languageSelection" style="display:none;">
+    <h2>Select Medium</h2>
+    <button id="englishBtn">English Medium</button>
+    <button id="tamilBtn">Tamil Medium</button>
+  </div>
 
-<!-- Protected PDF -->
-<div class="container" id="protectedContent">
-  <h2>Protected Content</h2>
-  <iframe src="protected-file.pdf" style="width:100%; height:450px;" sandbox="allow-scripts allow-same-origin"></iframe>
-</div>
+  <!-- Images Section -->
+  <div class="container" id="imageSection" style="display:none;">
+    <div id="imagesContainer"></div>
+  </div>
 
-<footer>B.Ed Warriors</footer>
+  <!-- PDF Viewer -->
+  <iframe id="pdfViewer"></iframe>
 
 <script>
-let deviceId = localStorage.getItem("deviceId") || crypto.randomUUID();
-localStorage.setItem("deviceId", deviceId);
-document.getElementById("deviceId").value = deviceId;
-
-const users = [
-  {name:"aro", email:"lalerev282@hostbyt.com", password:"890", deviceId:"1fdcfb35-7896-4dbe-bbff-21fa187cd25a"}
-];
-
-// Gallery → Image Page
-function openImagePage(id){
-  document.getElementById('gallery').style.display='none';
-  document.getElementById('imagePage').style.display='flex';
-  const container = document.getElementById('imagesContainer');
-  container.innerHTML='';
-  for(let i=1;i<=10;i++){
-    const img = document.createElement('img');
-    img.src = `https://picsum.photos/600/400?random=${id*10+i}`;
-    img.alt='Image '+i;
-    img.style.userSelect='none';
-    img.style.pointerEvents='none';
-    container.appendChild(img);
+  // Generate UUID for device
+  function uuidv4() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+      var r = Math.random() * 16 | 0, v = c=='x'?r:(r&0x3|0x8); return v.toString(16);
+    });
   }
-  // Scroll to bottom triggers pay popup
-  window.onscroll = function() {
-    if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 5) {
-      document.getElementById('payPopup').style.display='flex';
+
+  let deviceId = localStorage.getItem("deviceId");
+  if(!deviceId){
+    deviceId = uuidv4();
+    localStorage.setItem("deviceId", deviceId);
+  }
+  document.getElementById("deviceId").value = deviceId;
+  document.getElementById("deviceBox").textContent = "Your Device ID: " + deviceId;
+  document.getElementById("loginDeviceBox").textContent = "Your Device ID: " + deviceId;
+
+  const submitContainer = document.getElementById('submitContainer');
+  const loginContainer = document.getElementById('loginContainer');
+  const popup = document.getElementById('popup');
+  const loginMsg = document.getElementById('loginMsg');
+  const languageSelection = document.getElementById('languageSelection');
+  const imageSection = document.getElementById('imageSection');
+  const imagesContainer = document.getElementById('imagesContainer');
+  const pdfViewer = document.getElementById('pdfViewer');
+
+  // ======== HARD-CODED USERS ========
+  // Enter your users here
+  const users = [
+    {name:"Alice Smith", email:"alice@example.com", password:"alice123", deviceId:"1fdcfb35-7896-4dbe-bbff-21fa187cd25a"},
+    {name:"Bob Johnson", email:"bob@example.com", password:"bob123", deviceId:"123e4567-e89b-12d3-a456-426614174001"}
+  ];
+  // ================================
+
+  // Show login form
+  document.getElementById('showLoginBtn').addEventListener('click', ()=>{
+    submitContainer.style.display='none';
+    loginContainer.style.display='block';
+  });
+
+  // Registration (for new users, optional, will not persist after reload)
+  const form = document.getElementById('paymentForm');
+  form.addEventListener('submit', e=>{
+    e.preventDefault();
+    const name = form.name.value;
+    const email = form.email.value.trim();
+    const password = form.password.value;
+
+    if(users.find(u=>u.email===email)){
+      alert("Email already registered.");
+      return;
     }
-  };
-}
 
-function backToGallery(){
-  document.getElementById('imagePage').style.display='none';
-  document.getElementById('gallery').style.display='flex';
-  window.onscroll=null;
-}
+    users.push({name,email,password,deviceId});
+    popup.style.display='flex';
+    form.reset();
+    setTimeout(()=>{
+      popup.style.display='none';
+      submitContainer.style.display='none';
+      loginContainer.style.display='block';
+      loginMsg.textContent="Registration successful. Please login.";
+      loginMsg.style.color='green';
+      loginMsg.style.display='flex';
+    },500);
+  });
 
-// Pay confirmation → show registration
-function confirmPayment(){
-  document.getElementById('payPopup').style.display='none';
-  document.getElementById('imagePage').style.display='none';
-  document.getElementById('registerForm').style.display='block';
-}
+  // Login
+  const loginForm = document.getElementById('loginForm');
+  loginForm.addEventListener('submit', e=>{
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
 
-// Registration submit
-document.getElementById('paymentForm').addEventListener('submit', function(e){
-  e.preventDefault();
-  alert("Registered! Admin approval pending.");
-  this.reset();
-  document.getElementById('registerForm').style.display='none';
-  document.getElementById('loginForm').style.display='block';
-});
+    const user = users.find(u=>u.email===email && u.password===password);
+    if(!user){
+      loginMsg.textContent="Invalid email or password.";
+      loginMsg.style.color='red';
+      loginMsg.style.display='flex';
+      return;
+    }
 
-// Login submit
-document.getElementById('formLogin').addEventListener('submit', function(e){
-  e.preventDefault();
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass = document.getElementById('loginPassword').value;
-  const user = users.find(u=>u.email===email && u.password===pass);
-  if(!user){ alert("Invalid login"); return; }
-  alert("Login successful! Showing protected content");
-  document.getElementById('loginForm').style.display='none';
-  document.getElementById('protectedContent').style.display='block';
-});
+    if(user.deviceId!==deviceId){
+      loginMsg.textContent="This account is registered on another device.";
+      loginMsg.style.color='red';
+      loginMsg.style.display='flex';
+      return;
+    }
 
-// Show login button
-document.getElementById('showLoginBtn').addEventListener('click', ()=>{
-  document.getElementById('registerForm').style.display='none';
-  document.getElementById('loginForm').style.display='block';
-});
+    loginMsg.textContent="Login successful!";
+    loginMsg.style.color='green';
+    loginMsg.style.display='flex';
+    loginContainer.style.display='none';
+    languageSelection.style.display='block';
+  });
+
+  // PDF data
+  const englishFiles=[
+    {img:'english1.jpg', title:'Book 1', author:'Author A', pdf:'english1.pdf'},
+    {img:'english2.jpg', title:'Book 2', author:'Author B', pdf:'english2.pdf'},
+    {img:'english3.jpg', title:'Book 3', author:'Author C', pdf:'english3.pdf'},
+    {img:'english4.jpg', title:'Book 4', author:'Author D', pdf:'english4.pdf'}
+  ];
+  const tamilFiles=[
+    {img:'tamil1.jpg', title:'Book 1', author:'Author X', pdf:'tamil1.pdf'},
+    {img:'tamil2.jpg', title:'Book 2', author:'Author Y', pdf:'tamil2.pdf'},
+    {img:'tamil3.jpg', title:'Book 3', author:'Author Z', pdf:'tamil3.pdf'},
+    {img:'tamil4.jpg', title:'Book 4', author:'Author W', pdf:'tamil4.pdf'}
+  ];
+
+  function showFiles(files){
+    imagesContainer.innerHTML='';
+    pdfViewer.style.display='none';
+    files.forEach(file=>{
+      const div=document.createElement('div');
+      div.className='image-item';
+      div.innerHTML=`<img src="${file.img}" alt="${file.title}"><h3>${file.title}</h3><p>${file.author}</p>`;
+      div.addEventListener('click', ()=>{
+        pdfViewer.src=file.pdf;
+        pdfViewer.style.display='block';
+        window.scrollTo({top: pdfViewer.offsetTop, behavior:'smooth'});
+      });
+      imagesContainer.appendChild(div);
+    });
+    imageSection.style.display='block';
+  }
+
+  document.getElementById('englishBtn').addEventListener('click', ()=>showFiles(englishFiles));
+  document.getElementById('tamilBtn').addEventListener('click', ()=>showFiles(tamilFiles));
+
 </script>
-
 </body>
 </html>
