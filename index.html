@@ -91,7 +91,7 @@
   const pdfContainer = document.getElementById('pdfContainer');
   const pdfViewer = document.getElementById('pdfViewer');
 
-  // ======== USERS ========
+  // ===== Users =====
   const users = [
     {name:"Alice Smith", email:"alice@example.com", password:"alice123", deviceId:"43648fb2-330b-4d0a-b7f0-aa469228c4bf"},
     {name:"Bob Johnson", email:"bob@example.com", password:"bob123", deviceId:"123e4567-e89b-12d3-a456-426614174001"}
@@ -158,16 +158,16 @@
   // ===== JSON Data for Images / PDFs =====
   const filesJSON = {
     english: [
-      {img:'images/english1.jpg', title:'Book 1', author:'Author A', pdf:'https://aro5683.github.io/bedwarriors/pdfs/english1.pdf'},
-      {img:'images/english2.jpg', title:'Book 2', author:'Author B', pdf:'https://yourusername.github.io/repo-name/pdfs/english2.pdf'},
-      {img:'images/english3.jpg', title:'Book 3', author:'Author C', pdf:'https://yourusername.github.io/repo-name/pdfs/english3.pdf'},
-      {img:'images/english4.jpg', title:'Book 4', author:'Author D', pdf:'https://yourusername.github.io/repo-name/pdfs/english4.pdf'}
+      {img:'images/english1.jpg', title:'Book 1', author:'Author A', pdf:'english1.pdf'},
+      {img:'images/english2.jpg', title:'Book 2', author:'Author B', pdf:'pdfs/english2.pdf'},
+      {img:'images/english3.jpg', title:'Book 3', author:'Author C', pdf:'pdfs/english3.pdf'},
+      {img:'images/english4.jpg', title:'Book 4', author:'Author D', pdf:'pdfs/english4.pdf'}
     ],
     tamil: [
-      {img:'images/tamil1.jpg', title:'Book 1', author:'Author X', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil1.pdf'},
-      {img:'images/tamil2.jpg', title:'Book 2', author:'Author Y', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil2.pdf'},
-      {img:'images/tamil3.jpg', title:'Book 3', author:'Author Z', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil3.pdf'},
-      {img:'images/tamil4.jpg', title:'Book 4', author:'Author W', pdf:'https://yourusername.github.io/repo-name/pdfs/tamil4.pdf'}
+      {img:'images/tamil1.jpg', title:'Book 1', author:'Author X', pdf:'pdfs/tamil1.pdf'},
+      {img:'images/tamil2.jpg', title:'Book 2', author:'Author Y', pdf:'pdfs/tamil2.pdf'},
+      {img:'images/tamil3.jpg', title:'Book 3', author:'Author Z', pdf:'pdfs/tamil3.pdf'},
+      {img:'images/tamil4.jpg', title:'Book 4', author:'Author W', pdf:'pdfs/tamil4.pdf'}
     ]
   };
 
@@ -181,7 +181,8 @@
       div.innerHTML=`<img src="${file.img}" loading="lazy" alt="${file.title}">
                      <h3>${file.title}</h3><p>${file.author}</p>`;
       div.addEventListener('click', ()=>{
-        const viewerUrl = `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(file.pdf)}#disableprint=true&disabledownload=true&toolbar=0`;
+        // Open PDF.js locally
+        const viewerUrl = `pdfjs/web/viewer.html?file=${encodeURIComponent(file.pdf)}#disableprint=true&disabledownload=true&toolbar=0`;
         pdfViewer.src = viewerUrl;
         pdfContainer.style.display='block';
         window.scrollTo({top: pdfViewer.offsetTop, behavior:'smooth'});
@@ -193,7 +194,6 @@
 
   document.getElementById('englishBtn').addEventListener('click', ()=>showFiles(filesJSON.english));
   document.getElementById('tamilBtn').addEventListener('click', ()=>showFiles(filesJSON.tamil));
-
 </script>
 </body>
 </html>
