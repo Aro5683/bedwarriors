@@ -1,145 +1,163 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>B.Ed Warriors - Digital Access</title>
-<style>
-/* General Styles */
-body { margin:0; font-family: Arial, sans-serif; text-align:center; background:#f4f4f4; }
-header { background:#007bff; color:white; padding:20px; font-size:24px; }
-.container { max-width:400px; margin:30px auto; background:#fff; padding:20px; border-radius:10px; box-shadow:0 0 15px rgba(0,0,0,0.1); }
-button { padding:10px 20px; font-size:18px; border:none; border-radius:5px; cursor:pointer; }
-button:hover { opacity:0.9; }
-img.clickable { width:300px; cursor:pointer; margin:20px auto; display:block; }
-
-/* Gallery Styles */
-#gallery img { width:100%; display:block; margin-bottom:10px; }
-#overlay {
-  position:fixed; bottom:0; left:0; width:100%; height:100px;
-  background:rgba(0,0,0,0.7); color:white;
-  display:flex; justify-content:center; align-items:center; opacity:0;
-  transition:opacity 1s;
-}
-#buyButton { background:#ff9800; color:white; font-size:18px; padding:10px 20px; cursor:pointer; border:none; border-radius:5px; }
-
-/* Payment Styles */
-#upiQR { margin:30px auto; }
-#paidButton { background:#4caf50; color:white; font-size:20px; padding:15px 30px; border:none; border-radius:5px; cursor:pointer; display:none; margin-top:20px; }
-
-/* Form Styles */
-input { width:100%; padding:10px; margin-bottom:15px; border-radius:5px; border:1px solid #ccc; }
-#submitButton { background:#007bff; color:white; }
-#submitButton:hover { background:#0056b3; }
-
-/* Popup */
-#popup {
-  position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.7);
-  display:flex; justify-content:center; align-items:center; color:white; font-size:24px; display:none;
-}
-</style>
+  <meta charset="UTF-8">
+  <title>Paywall + Registration + PDF Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; background:#f6f7fb; }
+    .container { width: 380px; margin: 40px auto; background:white; padding:20px; border-radius:10px; box-shadow:0 4px 10px rgba(0,0,0,0.1); }
+    input, button { width:100%; padding:10px; margin:8px 0; border-radius:6px; }
+    input { border:1px solid #ddd; }
+    button { border:none; background:#2563eb; color:white; font-weight:600; cursor:pointer; margin-top:6px; }
+    #popup, #loginMsg { display:none; justify-content:center; align-items:center; margin-top:20px; padding:12px; background:#dcfce7; border:1px solid #16a34a; border-radius:6px; color:#166534; text-align:center;}
+    .device-box { margin-top:12px; font-size:14px; color:#555; }
+    #pdfContainer { width:100%; height:500px; border:1px solid #ccc; border-radius:6px; display:none; margin-top:20px; }
+    #paySection img { width:100%; border-radius:6px; }
+  </style>
 </head>
 <body>
 
-<header>B.Ed Warriors</header>
-
-<!-- Landing Page -->
-<div id="landingPage">
-  <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg" class="clickable" id="landingImage">
-</div>
-
-<!-- Gallery Page -->
-<div id="galleryPage" style="display:none;">
-  <div id="gallery">
-    <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg">
-    <img src="https://via.placeholder.com/600x400.png?text=2">
-    <img src="https://img.freepik.com/free-vector/fall-leaves-beige-background-vector_53876-143460.jpg" id="lastImage">
+  <!-- Pay Section -->
+  <div class="container" id="paySection">
+    
+    <img src="https://images.unsplash.com/photo-1580820267682-426da823b514?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cG9ydHJhaXQlMjBiYWNrZ3JvdW5kfGVufDB8fDB8fHww" alt="UPI QR Code" style="margin-top:10px;">
+    <h2>Pay ₹25 to Access the File</h2>
+    <img src="dummy-file-image.jpg" alt="Preview" />
+    <button id="paidBtn" style="background:#10b981;">Paid</button>
   </div>
-  <div id="overlay">
-    <button id="buyButton">Superb Buy to View Full</button>
+
+  <!-- Registration Form -->
+  <div class="container" id="submitContainer" style="display:none;">
+    <h2>Sign Up (New User Only)</h2>
+    <form id="paymentForm">
+      <input type="text" name="name" placeholder="Your Name" required>
+      <input type="email" name="email" placeholder="Your Email" required>
+      <input type="password" name="password" placeholder="Your Password" required>
+      <input type="hidden" name="deviceId" id="deviceId">
+      <button type="submit">Sign Up</button>
+    </form>
+    <button id="showLoginBtn" style="background:#10b981;">Login</button>
+    <div id="popup">Please wait 1 hour and come to access your file.</div>
+    <div class="device-box" id="deviceBox"></div>
   </div>
-</div>
 
-<!-- Payment Page -->
-<div id="paymentPage" style="display:none;" class="container">
-  <h2>Pay ₹25 via UPI</h2>
-  <p>Scan this QR code with any UPI app (GPay, PhonePe, Paytm)</p>
-  <canvas id="upiQR"></canvas>
-  <button id="paidButton">I Paid</button>
-</div>
+  <!-- Login Form -->
+  <div class="container" id="loginContainer" style="display:none;">
+    <h2>Login</h2>
+    <form id="loginForm">
+      <input type="email" id="loginEmail" placeholder="Email" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button type="submit">Login</button>
+    </form>
+    <div id="loginMsg"></div>
+    <div class="device-box" id="loginDeviceBox"></div>
+  </div>
 
-<!-- Form Page -->
-<div id="formPage" style="display:none;" class="container">
-  <h2>Submit Your Details</h2>
-  <form id="paymentForm">
-    <input type="text" name="name" placeholder="Your Name" required>
-    <input type="email" name="email" placeholder="Your Email" required>
-    <button type="submit" id="submitButton">Submit</button>
-  </form>
-</div>
+  <!-- PDF Viewer -->
+  <div class="container" id="pdfContainer">
+    <h2>Protected File</h2>
+    <iframe src="protected-file.pdf" style="width:100%; height:450px;" sandbox="allow-scripts allow-same-origin"></iframe>
+  </div>
 
-<!-- Popup -->
-<div id="popup">Please wait 1 hour and come to access your file.</div>
+  <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init('F77qJlImeLECVFtEM'); // EmailJS Public Key
 
-<!-- QRCode Library -->
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    // Generate UUID for device
+    function uuidv4() {
+      return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+        var r = Math.random() * 16 | 0, v = c=='x'?r:(r&0x3|0x8); return v.toString(16);
+      });
+    }
 
-<script>
-// Page Navigation
-const landingPage = document.getElementById('landingPage');
-const galleryPage = document.getElementById('galleryPage');
-const paymentPage = document.getElementById('paymentPage');
-const formPage = document.getElementById('formPage');
-const popup = document.getElementById('popup');
+    let deviceId = localStorage.getItem("deviceId");
+    if(!deviceId){
+      deviceId = uuidv4();
+      localStorage.setItem("deviceId", deviceId);
+    }
+    document.getElementById("deviceId").value = deviceId;
+    document.getElementById("deviceBox").textContent = "Your Device ID: " + deviceId;
+    document.getElementById("loginDeviceBox").textContent = "Your Device ID: " + deviceId;
 
-document.getElementById('landingImage').addEventListener('click', () => {
-  landingPage.style.display = 'none';
-  galleryPage.style.display = 'block';
-});
+    const submitContainer = document.getElementById('submitContainer');
+    const loginContainer = document.getElementById('loginContainer');
+    const popup = document.getElementById('popup');
+    const loginMsg = document.getElementById('loginMsg');
+    const paySection = document.getElementById('paySection');
+    const pdfContainer = document.getElementById('pdfContainer');
 
-// Gallery Scroll Overlay
-const lastImage = document.getElementById('lastImage');
-const overlay = document.getElementById('overlay');
+    const users = [
+      {name: "aro", email: "lalerev282@hostbyt.com", password: "890", deviceId: "1fdcfb35-7896-4dbe-bbff-21fa187cd25a"},
+      {name: "Alice Smith", email: "alice@example.com", password: "qwerty", deviceId: "6e9e7f41-6a9f-4e0a-90f9-3a3db7b0a12b"}
+    ];
 
-window.addEventListener('scroll', () => {
-  const rect = lastImage.getBoundingClientRect();
-  if(rect.top < window.innerHeight && rect.bottom > 0) {
-    overlay.style.opacity = 1;
-  } else {
-    overlay.style.opacity = 0;
-  }
-});
+    // Paid Button click
+    document.getElementById('paidBtn').addEventListener('click', function() {
+      paySection.style.display = 'none';
+      submitContainer.style.display = 'block';
+    });
 
-document.getElementById('buyButton').addEventListener('click', () => {
-  galleryPage.style.display = 'none';
-  paymentPage.style.display = 'block';
+    // Show Login Form button
+    document.getElementById('showLoginBtn').addEventListener('click', function() {
+      submitContainer.style.display = 'none';
+      loginContainer.style.display = 'block';
+    });
 
-  // Generate QR code
-  const upiID = "arockiaraaj2003-1@oksbi"; // Replace with your UPI ID
-  const amount = 25;
-  const upiURL = `upi://pay?pa=${upiID}&pn=B.Ed Warriors&am=${amount}&cu=INR`;
-  QRCode.toCanvas(document.getElementById('upiQR'), upiURL, function (error) {
-    if (error) console.error(error);
-    else document.getElementById('paidButton').style.display = 'inline-block';
-  });
-});
+    // Registration Form Submit
+    const form = document.getElementById('paymentForm');
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const templateParams = {
+        name: form.name.value,
+        email: form.email.value,
+        password: form.password.value,
+        deviceId: deviceId
+      };
+      emailjs.send('service_oa4f757', 'template_z7jxq0f', templateParams)
+        .then(() => {
+          popup.style.display = 'flex';
+          form.reset();
+          setTimeout(() => {
+            submitContainer.style.display = 'none';
+            loginContainer.style.display = 'block';
+            loginMsg.textContent = "Please wait for Admin Approval, After you can access this file.";
+            loginMsg.style.color = 'red';
+            loginMsg.style.display = 'flex';
+          }, 500);
+        })
+        .catch((err) => { alert('Something went wrong!'); console.error(err); });
+    });
 
-// "I Paid" Button
-document.getElementById('paidButton').addEventListener('click', () => {
-  paymentPage.style.display = 'none';
-  formPage.style.display = 'block';
-});
+    // Login Form Submit
+    const loginForm = document.getElementById('loginForm');
+    loginForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const user = users.find(u => u.email === email && u.password === password);
 
-// Form Submission
-const form = document.getElementById('paymentForm');
-form.addEventListener('submit', function(e) {
-  e.preventDefault();
-  // EmailJS or your backend code can go here if needed
-  formPage.style.display = 'none';
-  popup.style.display = 'flex';
-  form.reset();
-});
-</script>
+      if(!user){
+        loginMsg.textContent = "Invalid email or password.";
+        loginMsg.style.color = 'red';
+        loginMsg.style.display = 'flex';
+        return;
+      }
 
+      if(user.deviceId !== deviceId){
+        loginMsg.textContent = "This account is already registered on another device.";
+        loginMsg.style.color = 'red';
+        loginMsg.style.display = 'flex';
+        return;
+      }
+
+      loginMsg.textContent = "Login successful! ";
+      loginMsg.style.color = 'green';
+      loginMsg.style.display = 'flex';
+
+      // Show PDF
+      loginContainer.style.display = 'none';
+      pdfContainer.style.display = 'block';
+    });
+  </script>
 </body>
 </html>
