@@ -1,66 +1,16 @@
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Pay ₹25 via UPI</title>
-<style>
-body {
-  font-family: Arial, sans-serif;
-  text-align: center;
-  padding: 50px;
-  background: #f4f4f4;
-}
-h2 {
-  margin-bottom: 20px;
-}
-#upiQR {
-  margin: 30px auto;
-}
-button#paidButton {
-  background: #4caf50;
-  color: white;
-  font-size: 20px;
-  padding: 15px 30px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  display: none; /* hidden initially */
-  margin-top: 20px;
-}
-button#paidButton:hover {
-  background: #388e3c;
-}
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>View Document</title>
+  <style>
+    iframe { width: 100%; height: 90vh; border: none; }
+    /* Block right-click */
+    body { -webkit-user-select: none; user-select: none; }
+  </style>
 </head>
-<body>
-
-<h2>Pay ₹25 to Access Full Content</h2>
-<p>Take Screenshot and Scan this QR code with any UPI app (GPay, PhonePe, Paytm, etc.)</p>
-<div id="upiQR"></div>
-
-<button id="paidButton">I Paid</button>
-
-<script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
-<script>
-const upiID = "arockiaraaj2003-1@oksbi"; // <-- Replace with your UPI ID
-const amount = 25;
-const upiURL = `upi://pay?pa=${upiID}&pn=B.Ed Warriors&am=${amount}&cu=INR`;
-
-// Generate QR code
-QRCode.toCanvas(document.getElementById('upiQR'), upiURL, function (error) {
-  if (error) console.error(error);
-  else document.getElementById('paidButton').style.display = 'inline-block'; // show button after QR generated
-});
-
-// Redirect to form.html when user confirms payment
-document.getElementById('paidButton').addEventListener('click', () => {
-  window.location.href = 'form.html';
-});
-</script>
-
+<body oncontextmenu="return false;">
+  <iframe src="https://drive.google.com/file/d/FILE_ID/preview"></iframe>
 </body>
 </html>
